@@ -8,16 +8,34 @@ const handleLogin = e => {
     const storedUserDB = JSON.parse(localStorage.getItem("userDB"))
     const logResult = storedUserDB.find(i => i.user === username)
 
-    const userError = logResult ? "" : "Usuario incorrecto"
-    const passError = logResult && logResult.password !== password ? "Contraseña incorrecta." : ""
-    if (userError || passError) {
-        console.log(userError || passError)
-    } else {
-        console.log(`Bienvenid@ ${logResult.name} ${logResult.lastName}`)
-        let userLoggedId = logResult.id
+    const userError = logResult ? "" : Swal.fire({
+        icon: 'error',
+        title: 'Usuario incorrecto',
+        footer: '<a href="./index.html">Intente nuevamente</a>'
+    })
+    const passError = logResult && logResult.password !== password ? Swal.fire({
+        icon: 'error',
+        title: 'Contraseña incorrecta',
+        footer: '<a href="./index.html">Intente nuevamente</a>'
+    }) : ""
 
-        sessionStorage.setItem("userLoggedId", JSON.stringify(userLoggedId))
-        window.location.href = "./pages/calculator.html" 
+    if (userError || passError) {
+        userError || passError
+    } else {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Bienvenido',
+            showConfirmButton: false,
+            timer: 1500
+        })
+        setTimeout(() => {
+            let userLoggedId = logResult.id
+
+            sessionStorage.setItem("userLoggedId", JSON.stringify(userLoggedId))
+            window.location.href = "./pages/calculator.html"
+        }, 1500)
+
     }
 }
 
