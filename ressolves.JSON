@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Felicitaciones!",
+        "id": "congratulations",
+        "img": "../img/happyMan.png",
+        "message" : "Felicidades ${userLogged.name} ${userLogged.lastName}, cumple todos los requisitos para jubilarse."
+    },
+    {
+        "name": "Lo sentimos...",
+        "id": "ageInsufficient",
+        "img": "../img/sadMan.jpg",
+        "message" : "Requisitos de jubilación insuficientes. Su edad mínima necesaria es de ${genderNeedAge} años. Restan: ${remainingAge} año/s."
+    },
+    {
+        "name": "Lo sentimos...",
+        "id": "yearsInsufficient",
+        "img": "../img/sadMan.jpg",
+        "message" : "Requisitos de jubilación insuficientes. Año/s restante/s de aportes: ${remainingYears}"
+    }
+]

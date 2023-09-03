@@ -29,10 +29,10 @@ const handleLogin = e => {
             showConfirmButton: false,
             timer: 1500
         })
+        let userLoggedId = logResult.id
+        sessionStorage.setItem("userLoggedId", JSON.stringify(userLoggedId))
+        
         setTimeout(() => {
-            let userLoggedId = logResult.id
-
-            sessionStorage.setItem("userLoggedId", JSON.stringify(userLoggedId))
             window.location.href = "./pages/calculator.html"
         }, 1500)
 

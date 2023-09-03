@@ -12,18 +12,24 @@ hiUser.innerHTML = `<h4>Hola! ${userLogged.name} ${userLogged.lastName} </h4>`
 const ageForm = document.getElementById("ageLoged")
 ageForm.innerHTML = `<p>Su edad: ${userLogged.age} </p>`
 
-const genderForm = document.getElementById("gendderLoged")
+const genderForm = document.getElementById("genderLoged")
 genderForm.innerHTML = `<p>Género: ${gender} </p>`
-console.log(userLogged)
-
 
 
 const handleCalculator = e => {
     e.preventDefault()
 
 
-    const yearsWorked = parseInt(document.getElementById("worked").value)
-    const workedError = isNaN(yearsWorked) || yearsWorked === "" //eventito
+    const yearsWorkedInput = document.getElementById("worked")
+    const yearsWorked = parseInt(yearsWorkedInput.value)
+
+    if (isNaN(yearsWorked) || yearsWorkedInput.value === "") {
+        Swal.fire({
+            icon: 'error',
+            title: 'Ingrese un valor correcto',
+            footer: '<a href="./calculator.html">Intente nuevamente</a>'
+        })
+    }
 
     const genderNeedAge = userLogged.gender === "male" ? 65 : userLogged.gender === "female" ? 60 : null
 
@@ -31,18 +37,52 @@ const handleCalculator = e => {
     const yearsInsufficient = yearsWorked < 30
 
 
-    const errorMessage =
-        ageInsufficient ? `Requisitos de jubilación insuficientes. Su edad mínima necesaria es de ${genderNeedAge} años. Restan: ${genderNeedAge - userLogged.age} año/s.` :
-            yearsInsufficient ? `Requisitos de jubilación insuficientes. Año/s restante/s de aportes: ${30 - yearsWorked}` :
-                `Felicidades ${userLogged.name} ${userLogged.lastName}, cumple todos los requisitos para jubilarse.`
+    const messageId =
+        ageInsufficient ? "ageInsufficient" :
+            yearsInsufficient ? "yearsInsufficient" : "congratulations"
 
-    console.log(errorMessage)
-
-
+    finalresult(messageId, genderNeedAge, yearsWorked, userLogged)
 }
 
+
+
+
+
+const apiFetch = "../ressolves.JSON"
+function finalresult(messageId, genderNeedAge, yearsWorked, userLogged) {
+    fetch(apiFetch)
+        .then(res => res.json())
+        .then(data => {
+            const messageData = data.find(element => element.id === messageId)
+
+            if (messageData) {
+                const message = messageData.message
+                    .replace("${genderNeedAge}", genderNeedAge)
+                    .replace("${remainingAge}", genderNeedAge - userLogged.age)
+                    .replace("${remainingYears}", 30 - yearsWorked)
+                    .replace("${userLogged.name}", userLogged.name)
+                    .replace("${userLogged.lastName}", userLogged.lastName)
+
+                Swal.fire({
+                    title: messageData.name,
+                    text: message,
+                    imageUrl: messageData.img,
+                    imageWidth: 400,
+                    imageHeight: 200,
+                });
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Mensaje no encontrado',
+                })
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar el archivo JSON', error)
+        })
+}
+
+
 calculatorForm.addEventListener("submit", handleCalculator)
-
-
-
-
